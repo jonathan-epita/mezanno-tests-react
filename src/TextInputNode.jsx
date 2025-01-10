@@ -1,5 +1,6 @@
 import { Handle, NodeToolbar } from "@xyflow/react";
 import { Position } from "@xyflow/react";
+import { useEffect } from "react";
 import { useCallback } from "react";
 
 const categories = [{label: 'Titre', value: 'dc.title'}, 
@@ -8,11 +9,24 @@ const categories = [{label: 'Titre', value: 'dc.title'},
 const operations = [{label: 'doit contenir', value: 'any'}];
 
 const TextInputNode = ({ data }) => {
+    useEffect(() => {
+        const newData = {
+            ...data, 
+            category: 'dc.title',
+            operation: 'any',
+            inputValue: ''
+         };
+         data.onValuesChange(newData);
+    }, []);
+
     const onChange = useCallback((evt) => {
         const { name, value } = evt.target;
         const newData = { ...data, [name]: value };
         data.onValuesChange(newData);
     }, [data]);
+
+
+    const query = `(${data.category} ${data.operation} "${data.inputValue}")`;
 
   return (
     <>
@@ -45,7 +59,9 @@ const TextInputNode = ({ data }) => {
                 name="inputValue" 
                 className="border"
                 value={data.inputValue}
-                onChange={onChange}/>
+                onChange={onChange}
+            />
+            <label className="text-sm italic">{query}</label>
         </div>
         <Handle type="target" position={Position.Right}/>
         

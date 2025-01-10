@@ -48,30 +48,28 @@ const Flow = ({ query, setQuery }) => {
         [setEdges],
     );
 
-    const onNodeValuesChange = (data) => {
-        // console.log("onNodeValuesChange: ", data);
-        // console.log(nodes);
-        setNodes((nds) => 
-            nds.map((node) => {
-                // console.log("node: ", node);
-                // console.log(node.id === data.id);
-                return node.id === data.id ? { ...node, data } : node
-            }
-            )
-        );
-    };
+    
 
     const addNode = () => {
-        const nodeId = (nodes.length + 1).toString();
+        const nodeId = uuidv4();
 
         const onDeleteNode = () => {
+            console.log();
+            
             setNodes((nds) => nds.filter((node) => node.id !== nodeId));
         };
 
-        const uuid = uuidv4();
+        const onNodeValuesChange = (data) => {
+            setNodes((nds) => 
+                nds.map((node) => {
+                    return node.id === nodeId ? { ...node, data } : node
+                })
+            );
+        };
+
         const newNode = {
-          id: uuid,
-          data: { onDelete: onDeleteNode, onValuesChange: onNodeValuesChange, id: uuid, category: '', operation: '', inputValue: 'test'},
+          id: nodeId,
+          data: { onDelete: onDeleteNode, onValuesChange: onNodeValuesChange},
           position: {
             x: 0,
             y: 0,
@@ -112,7 +110,7 @@ const Flow = ({ query, setQuery }) => {
 
   return (
     <div className='flex flex-col'>
-        <div className='bg-slate-100' style={{ width: '50vw', height: '50vh' }}>
+        <div className='bg-slate-100' style={{ width: '100vw', height: '25vh' }}>
         <ReactFlow 
             nodes={nodes} 
             edges={edges}
